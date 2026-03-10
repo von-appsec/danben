@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.http import HttpResponse
 
+import logging
+
 from .models import PageStyle
 from .models import NavMenu
 from .models import SocialMediaItem
@@ -122,7 +124,7 @@ def download_resume_pdf(request):
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="daniel_brunker_resume.pdf"'
         return response
-    except Exception as e:
-        # Handle exceptions (e.g., log them, return an error message)
-        # For simplicity, just returning a basic HTTP  response here
-        return HttpResponse(f"Error while generating PDF: {e}", status=500)
+    except Exception:
+        # Handle exceptions: log details on the server and return a generic error message to the user
+        logging.exception("Error while generating PDF")
+        return HttpResponse("Error while generating PDF.", status=500)
